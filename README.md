@@ -91,15 +91,15 @@ encoders, because the world has moved on to Unicode.
 2. Numeric mode is just for numbers, might be useful in some cases.
 
 3. Alphanumeric mode supports numbers, upper case A-Z and a limited selection of
-punctuation marks, making it good for basic URLs.  Had this mode adopted BASE64
+punctuation marks, making it good for basic URLs.  Had this mode adopted Base64
 encoding (the URL-safe variant) it would be much more useful.
 
 4. Binary mode: totally transparent, byte for byte without any internal
 encoding.
 
 This choice is based on their usefulness.  Since any lower case letter in the
-data means we have to use binary mode anyway, I leave other modes for now until
-they are needed.
+data means we have to use binary mode anyway, I leave other modes to the future
+when they are needed.
 
 ### 4. Fixed data mask
 
@@ -121,7 +121,7 @@ and shift more processing to the encoder.
 
 One can understand that auto-masking is necessary for poorly rendered big codes,
 but what about small codes displayed on a clean, perfectly flat, high contrast
-surface like the LCD? Every QR code has timing patterns to give the fine
+surface such as the LCD? Every QR code has timing patterns to give the fine
 dimensions of each row and column, and they should function perfectly in this
 case.
 
@@ -138,10 +138,12 @@ train platform.
 Reading becomes slower but none needs a retry.
 
 3. [All-light](all-light.png): worst case with all data bits as light dots.
-This one is more challenging than the all-dark case.  Reading is even slower and
-2 readers need retries but none fails.
+This one is a bit more challenging than the all-dark case.  Reading is even
+slower and 2 readers need retries but none fails.  It seems the retries are for
+better alignment -- if you carefully fill the scan area with the code the read
+will be successful at the first try.
 
-Some old readers may experience more retries on all-light and all-dark cases,
+Some old readers may experience some retries on all-light and all-dark cases,
 because these are contrived extreme cases, not real data.
 
 ## References
