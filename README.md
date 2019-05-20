@@ -15,15 +15,12 @@ NB: although I'm pleased with the result and like to share it, please check out
 the limitations to make sure it's useful for *YOUR* application.
 
 1. It only supports QR version 1, 2, and 3 (53B content max).
-
 2. ECC level is fixed to LOW.
-
-3. It's binary mode only.
-
+3. It supports binary mode only.
 4. The data masking is fixed to #0.
 
-All these limitations are to be explained, but let's see the numbers first
-(using arm-gcc 7-2018-q2, Cortex-M4 target with -Os).
+All these limitations are to be explained; let's see the numbers first (using
+arm-gcc 7-2018-q2, Cortex-M4 target with -Os).
 
 | QR_SPEED | Size (bytes) | Stack (bytes) | V3 encode() cycles
 | --- | --- | --- | ---
@@ -38,10 +35,8 @@ QR_SPEED is a configurable macro that chooses the implementation of the ECC
 calculation, specifically the very busy Galois Field multiplier routine:
 
 - QR_SPEED = 1 selects the basic iterative multiplier.
-
 - QR_SPEED = 2 enables the unrolled assembly version.  This setting is for
 Thumb-2 only.
-
 - QR_SPEED = 3 uses the fast GF multiplier based on log/exp look-up tables (cost
 512 bytes).
 
@@ -53,9 +48,9 @@ That's all.
 
 ## Limitations explained
 
-The limitations are what make QR123 so small and fast.  The chosen parameters,
-or subset of features and capacities, work well with each other to ensure
-usability of such a simple and small implementation.
+The limitations are what make QR123 so small and fast.  The chosen parameters
+work well with each other to ensure usability of such a simple and small
+implementation.
 
 ### 1. Version limited to V3
 
@@ -70,9 +65,8 @@ This also limits the memory usage, avoids drawing multiple alignment patterns,
 and avoids the version info bits.
 
 Version 3 is 29x29, which means we can put an entire line in a 32-bit word.
-This is quite convenient and efficient.  If someday we need to implement the
-auto-masking feature, it could be made several times faster than a dot-by-dot
-approach.
+This is quite convenient and efficient.  If someday we need the auto-masking
+feature, it can be made several times faster than a dot-by-dot approach.
 
 ### 2. ECC level LOW only
 
@@ -91,17 +85,14 @@ QR code has 4 data encoding modes:
 
 1. Kanji mode is for Shift-JIS encoded Kanji characters but is omitted by most
 encoders, because the world has moved on to Unicode.
-
 2. Numeric mode is just for numbers, might be useful in some cases.
-
 3. Alphanumeric mode supports numbers, upper case A-Z and a limited selection of
 punctuation marks, making it good for basic URLs.  Had this mode adopted Base64
 encoding (the URL-safe variant) it would be much more useful.
-
 4. Binary mode: totally transparent, byte for byte without any internal
 encoding.
 
-All the encodings are simple; this choice is based on their usefulness.  Since
+All the encodings are simple; this choice is based on their usefulness.  Because
 any lower case letter in the data means we'll in binary mode anyway, I decide to
 leave other modes to the future when they are needed.
 
@@ -123,13 +114,13 @@ because usually QR codes are generated on PCs and the readers are on resource
 limited scanners (think warehouse scenario).  It makes sense to favor the reader
 and shift more processing to the encoder.
 
-One can understand that auto-masking is necessary for rough, crumpled big codes,
-but what about small codes displayed on a clean, perfectly flat, high contrast
-surface such as the LCD?  Every QR code has timing patterns to mark the fine
-dimensions of each row and column, and they should function perfectly in this
-case.  In other words: if a reader does its job properly by using the timing
-patterns, it shouldn't fail on codes with high scores, at least not on a perfect
-surface.
+One can understand that auto-masking is necessary for big codes printed on
+rough, crumpled paper, what about small codes displayed on a clean, perfectly
+flat, high contrast surface like the LCD?  Every QR code has timing patterns to
+mark the fine dimensions of each row and column, and they should function
+perfectly in this case.  In other words: if a reader does its job properly by
+utilizing the timing patterns, it shouldn't fail on codes with high scores, at
+least not on a perfect surface.
 
 I experimented and my conclusion so far is that QR123 is perfectly OK with the
 fixed data mask #0.  You may try for yourself the following test samples with
@@ -152,9 +143,9 @@ Reading takes more time but none needs a retry.  Data to produce this code:
 
 3. [All-light](all-light.png): worst case with all data bits as light dots.
 This one is a bit more challenging than the all-dark case.  Reading is slower
-and 2 readers need retries but none fails.  It seems the retries are for better
-alignment -- if you carefully fill the scan area with the code the read will be 
-successful on the first try.  Data to produce this code:
+and 2 readers need retry but none fails.  It seems the retries are for better
+alignment -- if I carefully fill the scan area with the code the read will be 
+successful on the first try.  Data for this code:
 
         0x99, 0x99, 0x99, 0x96, 0x66, 0x66, 0x66, 0x66, 0x69, 0x96, 0x66, 0x66,
         0x59, 0x99, 0x99, 0x66, 0x99, 0x53, 0x33, 0x33, 0x32, 0xcc, 0xd3, 0x32,
@@ -170,16 +161,12 @@ all-dark samples, since these are contrived extreme cases.
 - [QR Code Tutorial by
 Thonky](https://www.thonky.com/qr-code-tutorial/introduction): step by step
 explanation of the encoding process.
-
 - [QR Code Step by Step,
-Nayuki](https://www.nayuki.io/page/creating-a-qr-code-step-by-step): makes my
-coding so much easier.
-
+Nayuki](https://www.nayuki.io/page/creating-a-qr-code-step-by-step): this makes
+my coding so much easier.
 - [Reed-Solomon Codes for Coders,
 Wikiversity](https://en.wikiversity.org/wiki/Reed%E2%80%93Solomon_codes_for_coders)
 for the ECC.
 
-[](
-vim: set ai et ts=4 tw=80 syn=markdown spell spl=en_us fo=ta:
-)
+
 
