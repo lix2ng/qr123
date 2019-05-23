@@ -14,7 +14,7 @@ entirely possible and here is the result.
 NB: although I'm pleased with the result and like to share it, please check out
 the limitations to make sure it's useful for *YOUR* application.
 
-1. It only supports QR version 1, 2, and 3 (53B content max).
+1. It only supports QR version 1, 2, and 3 (max 53 bytes content).
 2. ECC level is fixed to LOW.
 3. It supports binary mode only.
 4. The data masking is fixed to #0.
@@ -70,14 +70,14 @@ feature, it can be made several times faster than a dot-by-dot approach.
 
 ### 2. ECC level LOW only
 
-This is an easy choice.  Screens are easy to clean and they don't curl or wear
+This is an easy decision.  Screens are easy to clean and they don't curl or wear
 like paper or fabric, and the code itself is small.  There won't be many error
 to correct, so why not give more bits to the payload? -- especially when the
 size is limited.
 
 Besides, ECC LOW up to V4 also allows straightforward ECC calculation without
 having to divide the buffer into blocks then interleave the results.  Another
-complexity avoided.
+complexity is avoided.
 
 ### 3. Binary mode only
 
@@ -87,7 +87,7 @@ QR code has 4 data encoding modes:
 encoders, because the world has moved on to Unicode.
 2. Numeric mode is just for numbers, might be useful in some cases.
 3. Alphanumeric mode supports numbers, upper case A-Z and a limited selection of
-punctuation marks, making it good for basic URLs.  Had this mode adopted Base64
+punctuation marks, making it good for basic URLs.  Had this mode used Base64
 encoding (the URL-safe variant) it would be much more useful.
 4. Binary mode: totally transparent, byte for byte without any internal
 encoding.
@@ -103,24 +103,23 @@ auto-masking encoder, check out [Nayuki's benchmark and
 observations](https://www.nayuki.io/page/fast-qr-code-generator-library).
 
 The high cost is by design: all 8 predefined masks must be applied and evaluated
-by a multi-step scoring procedure, and the mask producing the lowest score wins.
-A low score means the dark and light dots (modules) are more randomly mixed
-without large/long/confusing dark or light features, which makes the decoding
-easier.
+by a long, multi-step scoring procedure, and the mask producing the lowest score
+wins.  A low score means the dark and light dots (modules) are more randomly
+mixed without large/long/confusing features, which makes the decoding easier.
 
-Although I wish they had adopted a capable but fixed bit permutation algorithm
-to achieve the same goal, I suppose this exhaustive process was the right choice
-because usually QR codes are generated on PCs and the readers are on resource
-limited scanners (think warehouse scenario).  It makes sense to favor the reader
-and shift more processing to the encoder.
+Although I wish they had adopted a sophisticated but fixed bit permutation
+scheme to achieve the same goal, I suppose this exhaustive process was a good
+choice because usually QR codes are generated on PCs and the readers are on
+resource limited scanners (think warehouse scenario).  It makes sense to favor
+the reader and shift more processing to the encoder.
 
-One can understand that auto-masking is necessary for big codes printed on
-rough, crumpled paper, what about small codes displayed on a clean, perfectly
-flat, high contrast surface like the LCD?  Every QR code has timing patterns to
-mark the fine dimensions of each row and column, and they should function
-perfectly in this case.  In other words: if a reader does its job properly by
-utilizing the timing patterns, it shouldn't fail on codes with high scores, at
-least not on a perfect surface.
+If we can't change it can we skip it?  One can understand that auto-masking is
+necessary for big codes printed on rough, crumpled paper, what about small codes
+displayed on a clean, perfectly flat, high contrast surface like the LCD?  Every
+QR code has timing patterns to mark the fine dimensions of each row and column,
+and they should function perfectly in this case.  In other words: if a reader
+does its job properly by utilizing the timing patterns, it shouldn't fail on
+codes with high scores, at least not on a perfect surface.
 
 I experimented and my conclusion so far is that QR123 is perfectly OK with the
 fixed data mask #0.  You may try for yourself the following test samples with
@@ -169,4 +168,4 @@ Wikiversity](https://en.wikiversity.org/wiki/Reed%E2%80%93Solomon_codes_for_code
 for the ECC.
 
 
-
+vim: set ai et ts=4 tw=80 syn=markdown spell spl=en_us fo=ta:

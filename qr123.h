@@ -34,7 +34,8 @@ typedef struct qr_ctx {
 } qr_ctx;
 
 /*
- * Return false if input exceeds the capacity of chosen version.
+ * Return false if version number is invalid or input exceeds the capacity of
+ * specified version.
  *  - Parameters are written to the context.
  *  - Must evaluate before encoding.
  *  - Must fail if evaluation fails.
